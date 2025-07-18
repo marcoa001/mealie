@@ -19,27 +19,22 @@ spec:
           image: postgres:15
           ports:
             - containerPort: 5432
-          env:
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_PASSWORD
-            - name: POSTGRES_USER
-              value: mealie
-            - name: POSTGRES_DB
-              value: mealie
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          
           volumeMounts:
-            - name: postgres-pv
+            - name: postgres-data
               mountPath: /var/lib/postgresql/data
+        
   volumeClaimTemplates:
     - metadata:
-        name: postgres-pv
+        name: postgres-data
       spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            storage: 2Gi
+            storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
