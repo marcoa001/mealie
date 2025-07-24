@@ -1,0 +1,35 @@
+namespace: mealie-app
+
+mealie:
+  name: mealie
+  image:
+    repository: ghcr.io/mealie-recipes/mealie
+    tag: v3.0.1
+  replicas: 1
+  allowSignup: false
+  timezone: America/Anchorage
+  baseUrl: https://mealie.yourdomain.com
+  dbEngine: postgres
+  data:
+    storage: 2Gi
+  service:
+    type: NodePort
+    port: 9000
+    nodePort: 30925
+
+postgres:
+  name: postgres
+  image:
+    repository: postgres
+    tag: "15"
+  replicas: 1
+  data:
+    storage: 1Gi
+  service:
+    port: 5432
+  secret:
+    user: mealie
+    password: mealie
+    db: mealie
+    server: postgres
+    port: 5432

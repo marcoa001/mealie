@@ -1,0 +1,6 @@
+apiVersion: v2
+name: mealie
+version: 0.1.0
+description: A Helm chart for deploying Mealie and Postgres
+appVersion: "3.0.1"
+

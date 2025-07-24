@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.mealie.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.mealie.service.type }}
+  ports:
+    - port: {{ .Values.mealie.service.port }}
+      targetPort: {{ .Values.mealie.service.port }}
+      nodePort: {{ .Values.mealie.service.nodePort }}
+  selector:
+    app: {{ .Values.mealie.name }} 

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.mealie.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.mealie.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.mealie.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.mealie.name }}
+    spec:
+      containers:
+        - name: {{ .Values.mealie.name }}
+          image: {{ .Values.mealie.image.repository }}:{{ .Values.mealie.image.tag }}
+          ports:
+            - containerPort: {{ .Values.mealie.service.port }}
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          env:
+            - name: ALLOW_SIGNUP
+              value: "{{ .Values.mealie.allowSignup }}"
+            - name: TZ
+              value: {{ .Values.mealie.timezone }}
+            - name: BASE_URL
+              value: {{ .Values.mealie.baseUrl }}
+            - name: DB_ENGINE
+              value: {{ .Values.mealie.dbEngine }}
+          volumeMounts:
+            - name: mealie-data
+              mountPath: /app/data
+      volumes:
+        - name: mealie-data
+          persistentVolumeClaim:
+            claimName: mealie-pvc 
