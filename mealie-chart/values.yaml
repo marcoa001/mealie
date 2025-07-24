@@ -17,19 +17,10 @@ mealie:
     port: 9000
     nodePort: 30925
 
-postgres:
-  name: postgres
-  image:
-    repository: postgres
-    tag: "15"
-  replicas: 1
-  data:
-    storage: 1Gi
-  service:
-    port: 5432
-  secret:
-    user: mealie
-    password: mealie
-    db: mealie
-    server: postgres
-    port: 5432
+# Configuración de conexión a la base de datos externa (debe coincidir con el postgres-chart)
+dbSecret:
+  user: mealie
+  password: mealie
+  db: mealie
+  server: postgres.mealie-db.svc.cluster.local
+  port: 5432

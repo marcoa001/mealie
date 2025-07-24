@@ -1,32 +1,30 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgres
-  namespace: mealie-app
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     matchLabels:
-      app: postgres
-  serviceName: "postgres"
-  replicas: 1
+      app: {{ .Values.name }}
+  serviceName: "{{ .Values.name }}"
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
-        app: postgres
+        app: {{ .Values.name }}
     spec:
       containers:
-        - name: postgres
-          image: postgres:15
+        - name: {{ .Values.name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
-            - containerPort: 5432
+            - containerPort: {{ .Values.service.port }}
           envFrom:
             - secretRef:
                 name: postgres-secret
-          
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
-        
   volumeClaimTemplates:
     - metadata:
         name: postgres-data
@@ -34,15 +32,4 @@ spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            storage: 1Gi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres
-  namespace: mealie-app
-spec:
-  ports:
-    - port: 5432
-  selector:
-    app: postgres
+            storage: {{ .Values.data.storage }} 
