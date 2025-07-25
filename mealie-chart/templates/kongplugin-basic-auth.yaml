@@ -1,0 +1,10 @@
+{{- if .Values.kong.basicAuth.enabled }}
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: mealie-basic-auth
+  namespace: {{ .Values.namespace }}
+plugin: basic-auth
+config:
+  hide_credentials: true
+{{- end }} 

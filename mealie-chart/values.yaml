@@ -1,5 +1,15 @@
 namespace: mealie-app
 
+ingress:
+  enabled: true
+  host: mealie.local
+
+kong:
+  basicAuth:
+    enabled: true
+    username: mealie-user
+    password: mypassword
+
 mealie:
   name: mealie
   image:
