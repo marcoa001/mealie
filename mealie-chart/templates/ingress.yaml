@@ -4,13 +4,10 @@ kind: Ingress
 metadata:
   name: mealie
   namespace: {{ .Values.namespace }}
-  annotations:
-    konghq.com/strip-path: "true"
-    {{- if .Values.kong.basicAuth.enabled }}
-    konghq.com/plugins: mealie-basic-auth
-    {{- end }}
 spec:
-  ingressClassName: kong
+  {{- if .Values.ingress.kong.enabled }}
+  ingressClassName: {{ .Values.ingress.kong.ingressClassName }}
+  {{- end }}
   rules:
     - host: {{ .Values.ingress.host }}
       http:

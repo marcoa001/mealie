@@ -3,12 +3,10 @@ namespace: mealie-app
 ingress:
   enabled: true
   host: mealie.local
-
-kong:
-  basicAuth:
+  # Configuración de Kong
+  kong:
     enabled: true
-    username: mealie-user
-    password: mypassword
+    ingressClassName: kong
 
 mealie:
   name: mealie
@@ -18,14 +16,14 @@ mealie:
   replicas: 2
   allowSignup: false
   timezone: America/Anchorage
-  baseUrl: https://mealie.yourdomain.com
+  baseUrl: http://mealie.local
   dbEngine: postgres
   data:
     storage: 2Gi
   service:
     type: NodePort
-    port: 9000
-    nodePort: 30925
+    port: 9000   # Puerto de la aplicación
+    nodePort: 30925  # Puerto del nodo
 
 # Configuración de conexión a la base de datos externa (debe coincidir con el postgres-chart)
 dbSecret:
