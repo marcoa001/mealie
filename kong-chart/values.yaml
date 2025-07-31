@@ -1,0 +1,18 @@
+# Configuración base de Kong
+kong:
+  # DB-less mode
+  env:
+    database: "off"
+
+  # Ingress Controller
+  ingressController:
+    enabled: true
+    ingressClass: kong
+
+  # Admin API
+  admin:
+    enabled: true
+    http:
+      enabled: true
+    tls:
+      parameters: []

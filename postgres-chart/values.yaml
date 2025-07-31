@@ -1,0 +1,16 @@
+namespace: mealie-db
+name: postgres
+image:
+  repository: postgres
+  tag: "15"
+replicas: 1
+data:
+  storage: 1Gi
+service:
+  port: 5432
+secret:
+  user: mealie
+  password: mealie
+  db: mealie
+  server: postgres.mealie-db.svc.cluster.local
+  port: 5432 
