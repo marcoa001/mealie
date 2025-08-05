@@ -1,0 +1,84 @@
+---
+# RoleBindings para namespaces específicos
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mealie-app-binding
+  namespace: mealie-db
+subjects:
+- kind: ServiceAccount
+  name: mealie-app-sa
+  namespace: mealie-db
+- kind: User
+  name: mealie-developer
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: mealie-app-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: monitoring-binding
+  namespace: monitoring
+subjects:
+- kind: ServiceAccount
+  name: prometheus-operator
+  namespace: monitoring
+- kind: User
+  name: monitoring-admin
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: monitoring-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRoleBindings para acceso global
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: mealie-admin-binding
+subjects:
+- kind: User
+  name: mealie-admin
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: mealie-admins
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: mealie-admin-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: mealie-readonly-binding
+subjects:
+- kind: User
+  name: mealie-viewer
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: mealie-viewers
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: mealie-readonly-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: db-operator-binding
+subjects:
+- kind: User
+  name: db-operator
+  apiGroup: rbac.authorization.k8s.io
+- kind: ServiceAccount
+  name: postgres-operator-sa
+  namespace: mealie-db
+roleRef:
+  kind: ClusterRole
+  name: db-operator-role
+  apiGroup: rbac.authorization.k8s.io 

@@ -24,3 +24,11 @@ grafana:
       login_attribute_path: preferred_username
       name_attribute_path: name
       email_attribute_path: email
+
+  # Persistencia para Grafana
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    annotations: {}

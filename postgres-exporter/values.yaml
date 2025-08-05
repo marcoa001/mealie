@@ -1,0 +1,46 @@
+#https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-postgres-exporter   editar
+
+config:
+  ## The datasource properties on config are passed through helm tpl function.
+  ## ref: https://helm.sh/docs/developing_charts/#using-the-tpl-function
+  datasource:
+    # Specify one of both datasource or datasourceSecret
+    host: 'postgres.mealie-db.svc.cluster.local'
+    port: "5432"
+    database: 'mealie'
+    sslmode: 'disable'
+    userSecret: 
+      # Secret name
+      name: 'postgres-secret'
+      # User key inside secret
+      key: 'POSTGRES_USER'
+    # Only one of password, passwordFile, passwordSecret and pgpassfile can be specified
+    passwordSecret:
+      # Secret name
+      name: 'postgres-secret'
+      # Password key inside secret
+      key: 'POSTGRES_PASSWORD'
+   
+serviceMonitor:
+  # When set true then use a ServiceMonitor to configure scraping
+  enabled: true
+  # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+  labels:
+    release: prometheus #porque al usar el stack de prometheus, y solo buscar en el service monitor prometheus
+    team: mealie
+  # Set timeout for scrape
+  # timeout: 10s
+  # Set of labels to transfer from the Kubernetes Service onto the target
+  # targetLabels: []
+  # MetricRelabelConfigs to apply to samples before ingestion
+  # metricRelabelings: []
+  # Set relabel_configs as per https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+  # relabelings: []
+  # HTTP scheme to use for scraping. For example `http` or `https`. Default is `http`.
+  # scheme: http
+  # TLS configuration to use when scraping the metric endpoint by Prometheus.
+  # tlsConfig: {}
+
+
+
+    
