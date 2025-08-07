@@ -4,11 +4,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: mealie-app-binding
-  namespace: mealie-db
+  #namespace: mealie-app
 subjects:
 - kind: ServiceAccount
   name: mealie-app-sa
-  namespace: mealie-db
+  #namespace: mealie-app
 - kind: User
   name: mealie-developer
   apiGroup: rbac.authorization.k8s.io
@@ -24,7 +24,7 @@ metadata:
   namespace: monitoring
 subjects:
 - kind: ServiceAccount
-  name: prometheus-operator
+  name: prometheus-operator-sa
   namespace: monitoring
 - kind: User
   name: monitoring-admin
@@ -32,6 +32,21 @@ subjects:
 roleRef:
   kind: Role
   name: monitoring-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# user de prueba
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mealie-app-binding
+  namespace: mealie-db
+subjects:
+- kind: User
+  name: test1
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: mealie-app-role
   apiGroup: rbac.authorization.k8s.io
 ---
 # ClusterRoleBindings para acceso global

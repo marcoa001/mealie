@@ -13,6 +13,7 @@ spec:
       labels:
         app: {{ .Values.mealie.name }}
     spec:
+      serviceAccountName: mealie-app-sa
       containers:
         - name: {{ .Values.mealie.name }}
           image: {{ .Values.mealie.image.repository }}:{{ .Values.mealie.image.tag }}

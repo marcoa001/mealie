@@ -56,3 +56,10 @@ echo -e "${YELLOW}Para ver los logs:${NC}"
 echo "kubectl logs -n mealie-db -l app.kubernetes.io/name=prometheus-postgres-exporter"
 echo -e "${YELLOW}Para acceder al servicio:${NC}"
 echo "kubectl port-forward -n mealie-db svc/postgres-exporter-prometheus-postgres-exporter 9187:9187" 
+
+
+
+
+#para ir al homepage-- kubectl get svc -n mealie-db y ver el puerto, hacer un port-forward y acceder a la pagina
+#kubectl port-forward -n mealie-db svc/postgres-exporter-prometheus-postgres-exporter 9187:80 &
+#localhost:9187/metrics
