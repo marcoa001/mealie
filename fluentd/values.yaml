@@ -1,0 +1,79 @@
+# Configuración de variables de entorno para Fluentd
+env:
+  # Argumentos de línea de comandos para Fluentd
+  # --no-supervisor: Ejecuta Fluentd sin supervisor (más ligero)
+  # -q: Modo silencioso (menos logs de debug)
+  FLUENTD_ARGS: "--no-supervisor -q"
+
+# Configuración de ConfigMaps para personalizar la configuración de Fluentd
+configMaps:
+  # Desactiva la configuración por defecto para usar nuestra configuración personalizada
+  useDefault: false
+  # Configuración personalizada de Fluentd en formato de plugin
+  customConfig: |
+    # Fuente de datos: Lee logs de contenedores de Kubernetes
+    <source>
+      @type tail
+      @id in_tail_container_logs
+      # Ruta donde Kubernetes guarda los logs de contenedores
+      path /var/log/containers/*.log
+      # Excluye logs de Fluentd para evitar loops infinitos
+      exclude_path ["/var/log/containers/fluentd*"]
+      # Archivo de posición para recordar hasta dónde se leyó
+      pos_file /var/log/fluentd-containers.log.pos
+      # Etiqueta para identificar estos logs
+      tag kubernetes.*
+      # Lee desde el inicio del archivo si no existe pos_file
+      read_from_head true
+
+      # Parser CRI: Formato estándar de logs de contenedores en Kubernetes
+      <parse>
+        @type cri
+        time_format %Y-%m-%dT%H:%M:%S.%L%z
+      </parse>
+    </source>
+
+    # Excluye logs de Fluentd para evitar loops
+    <match fluentd.**>
+      @type null
+    </match>
+
+    <match kubernetes.var.log.containers.**fluentd**.log>
+      @type null
+    </match>
+
+    # Filtro: Agrega metadatos de Kubernetes (labels, annotations, etc.)
+    <filter kubernetes.**>
+      @type kubernetes_metadata
+      @id filter_kube_metadata
+    </filter>
+
+    # Filtro: Transforma y limpia los logs
+    <filter kubernetes.var.log.containers.**>
+      @type record_transformer
+      enable_ruby
+      # Remueve campos innecesarios para reducir tamaño
+      remove_keys kubernetes, docker
+
+      # Agrega campos útiles para búsqueda en Loki
+      <record>
+        app ${ record.dig("kubernetes", "labels", "app") }
+        job ${ record.dig("kubernetes", "labels", "app") }
+        namespace ${ record.dig("kubernetes", "namespace_name") }
+        pod ${ record.dig("kubernetes", "pod_name") }
+        container ${ record.dig("kubernetes", "container_name") }
+      </record>
+    </filter>
+    
+    # Destino: Envía logs procesados a Loki
+    <match kubernetes.var.log.containers.**>
+      @type loki
+      # URL de Loki en el namespace monitoring
+      url "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+      # Etiquetas dinámicas basadas en los campos extraídos
+      label_keys "app,job,namespace,pod,container"
+      # Configuración del buffer
+      flush_interval 10s
+      flush_at_shutdown true
+      buffer_chunk_limit 1m
+    </match>
