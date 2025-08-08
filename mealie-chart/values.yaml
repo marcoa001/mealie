@@ -13,7 +13,7 @@ mealie:
   image:
     repository: ghcr.io/mealie-recipes/mealie
     tag: v3.0.1
-  replicas: 2
+  replicas: 3
   allowSignup: false
   timezone: America/Anchorage
   baseUrl: http://mealie.local
