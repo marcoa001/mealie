@@ -16,3 +16,12 @@ kong:
       enabled: true
     tls:
       parameters: []
+
+# Exponer el proxy como NodePort con puerto fijo
+proxy:
+  type: NodePort
+  http:
+    enabled: true
+    nodePort: 30768
+  tls:
+    enabled: false
