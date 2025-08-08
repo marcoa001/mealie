@@ -7,7 +7,8 @@ spec:
   project: default
   source:
     repoURL: https://github.com/marcoa001/mealie.git
-    targetRevision: HEAD
+    #targetRevision: HEAD
+    targetRevision: argo-branch
     path: mealie-chart
     helm:
       valueFiles:

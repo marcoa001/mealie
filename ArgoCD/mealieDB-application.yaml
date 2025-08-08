@@ -7,14 +7,15 @@ spec:
   project: default
   source:
     repoURL: https://github.com/marcoa001/mealie.git
-    targetRevision: HEAD
+    #targetRevision: HEAD
+    targetRevision: argo-branch
     path: postgres-chart
     helm:
       valueFiles:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: mealie-db
+    namespace: mealie-app
   syncPolicy:
     automated:
       prune: true
