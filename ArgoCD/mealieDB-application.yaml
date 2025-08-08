@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mealieDB-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/marcoa001/mealie.git
+    targetRevision: HEAD
+    path: postgres-chart
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mealie-db
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
