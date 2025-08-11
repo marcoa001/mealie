@@ -1,11 +1,18 @@
-{{- if not .Values.rollouts.enabled }}
-apiVersion: apps/v1
-kind: Deployment
+{{- if .Values.rollouts.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: {{ .Values.mealie.name }}
   namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ .Values.mealie.replicas }}
+  revisionHistoryLimit: 3
+  strategy:
+    canary:
+      maxUnavailable: {{ .Values.rollouts.canary.maxUnavailable }}
+      maxSurge: {{ .Values.rollouts.canary.maxSurge }}
+      steps:
+{{ toYaml .Values.rollouts.canary.steps | indent 8 }}
   selector:
     matchLabels:
       app: {{ .Values.mealie.name }}
@@ -38,5 +45,6 @@ spec:
       volumes:
         - name: mealie-data
           persistentVolumeClaim:
-            claimName: mealie-pvc 
+            claimName: mealie-pvc
 {{- end }}
+
