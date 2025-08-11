@@ -1,34 +1,67 @@
 namespace: mealie-app
 
+# Configuración de Argo Rollouts
+replicaCount: 3
+
+# Configuración de imagen
+image:
+  repository: ghcr.io/hkotel/mealie
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+# Configuración del servicio
+service:
+  type: ClusterIP
+  port: 80
+
+# Configuración del ingress
 ingress:
   enabled: true
-  host: mealie.local
-  # Configuración de Kong
-  kong:
+  className: "nginx"
+  hosts:
+    - host: mealie.local
+      paths:
+        - path: /
+          pathType: Prefix
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+
+# Configuración de recursos
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+# Configuración de Argo Rollouts
+rollout:
+  enabled: true
+  strategy: canary
+  canary:
+    steps:
+      - weight: 10
+        pause: 30s
+      - weight: 25
+        pause: 1m
+      - weight: 50
+        pause: 2m
+      - weight: 100
+    analysis:
+      successRate: 95
+      interval: 30s
+      count: 5
+    rollback:
+      onAnalysisFailure: true
+      onError: true
+      onTimeout: true
+      timeout: 5m
+
+# Configuración de monitoreo
+monitoring:
+  enabled: true
+  serviceMonitor:
     enabled: true
-    ingressClassName: kong
-
-mealie:
-  name: mealie
-  image:
-    repository: ghcr.io/mealie-recipes/mealie
-    tag: v3.0.1
-  replicas: 3
-  allowSignup: false
-  timezone: America/Anchorage
-  baseUrl: http://mealie.local
-  dbEngine: postgres
-  data:
-    storage: 2Gi
-  service:
-    type: NodePort
-    port: 9000   # Puerto de la aplicación
-    nodePort: 30925  # Puerto del nodo
-
-# Configuración de conexión a la base de datos externa (debe coincidir con el postgres-chart)
-dbSecret:
-  user: mealie
-  password: mealie
-  db: mealie
-  server: postgres.mealie-db.svc.cluster.local
-  port: 5432
+    interval: 30s

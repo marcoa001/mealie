@@ -15,7 +15,7 @@ spec:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: mealie-app
+    namespace: mealie-db
   syncPolicy:
     automated:
       prune: true

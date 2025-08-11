@@ -1,6 +1,7 @@
 apiVersion: v2
 name: mealie
+description: A Helm chart for Mealie application with Argo Rollouts support
+type: application
 version: 0.1.0
-description: A Helm chart for deploying Mealie and Postgres
-appVersion: "3.0.1"
+appVersion: "1.0.0"
 
