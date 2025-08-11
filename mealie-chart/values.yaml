@@ -8,9 +8,9 @@ ingress:
     enabled: true
     ingressClassName: kong
 
-# Argo Rollouts (canary) - deshabilitado por defecto
+# Argo Rollouts (canary)
 rollouts:
-  enabled: false
+  enabled: true
   canary:
     # Ajustes de capacidad durante el canary
     maxUnavailable: 0
@@ -26,6 +26,8 @@ rollouts:
       - setWeight: 75
       - pause:
           duration: 120
+    abortScaleDownDelaySeconds: 30
+  progressDeadlineSeconds: 60
 
 mealie:
   name: mealie

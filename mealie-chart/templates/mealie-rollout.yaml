@@ -13,6 +13,7 @@ spec:
       maxSurge: {{ .Values.rollouts.canary.maxSurge }}
       steps:
 {{ toYaml .Values.rollouts.canary.steps | indent 8 }}
+      abortScaleDownDelaySeconds: {{ .Values.rollouts.canary.abortScaleDownDelaySeconds }}
   selector:
     matchLabels:
       app: {{ .Values.mealie.name }}
