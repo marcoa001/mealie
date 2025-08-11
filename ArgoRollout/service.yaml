@@ -1,24 +1,30 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: rollout-bluegreen-active
+  name: mealie-canary
+  namespace: mealie-app
 spec:
   selector:
-    app: rollout-bluegreen
+    app: mealie
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 8080
+    port: 9000
+    targetPort: 9000
+  type: NodePort
+  nodePort: 30925
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: rollout-bluegreen-preview
+  name: mealie-stable
+  namespace: mealie-app
 spec:
   selector:
-    app: rollout-bluegreen
+    app: mealie
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
+    port: 9000
+    targetPort: 9000
+  type: NodePort
+  nodePort: 30926
