@@ -3,7 +3,7 @@ name: postgres
 image:
   repository: postgres
   tag: "15"
-replicas: 1
+replicas: 2
 data:
   storage: 1Gi
 service:
